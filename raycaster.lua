@@ -9,7 +9,7 @@ return function (shaders, camDist, camPlane)
     -- Create segment quads for each block type.
     return {
         draw = function (map, atlas, time, x, y, vx, vy)
-            love.graphics.setPointSize(2)
+            love.graphics.setPointSize(1.5)
             local cdx, cdy = vec.times(vx, vy, camDist)
             local cpx, cpy = vec.times(vy, -vx, camPlane)
             local width = love.graphics.getWidth()
