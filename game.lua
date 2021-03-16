@@ -1,7 +1,9 @@
-local atlas = require 'atlas'
+--- This module creates the game object and initialises some global state crap.
 
-return function (atlasTxt, atlasImg)
+local assets = require 'assets'
+
+return function (assetPrefix)
     return {
-        atlas = atlas(atlasTxt, atlasImg)
+        assets = assets(assetPrefix)
     }
 end

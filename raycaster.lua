@@ -3,15 +3,15 @@
 -- It can then take a 2d map of codes, a position, and a looking angle and
 -- renders an image of what it sees
 
-local util = require 'util'
+local vec = require 'vec'
 
-return function (quads, camDist, camPlane)
+return function (shaders, camDist, camPlane)
     -- Create segment quads for each block type.
-    local segments = {}
     return {
-        draw = function (map, atlas, x, y, vx, vy)
-            local cdx, cdy = util.vTimes(vx, vy, camDist)
-            local cpx, cpy = util.vTimes(vy, -vx, camPlane)
+        draw = function (map, atlas, time, x, y, vx, vy)
+            love.graphics.setPointSize(2)
+            local cdx, cdy = vec.times(vx, vy, camDist)
+            local cpx, cpy = vec.times(vy, -vx, camPlane)
             local width = love.graphics.getWidth()
             local height = love.graphics.getHeight()
             for ix = -width * 0.5, width * 0.5 do
@@ -24,7 +24,7 @@ return function (quads, camDist, camPlane)
                 local sdy = 0
                 local hit = false
                 local prop = ix / (width * 0.5)
-                local rx, ry = util.vPlus(
+                local rx, ry = vec.plus(
                     cpx * prop,
                     cpy * prop,
                     cdx,
@@ -74,14 +74,24 @@ return function (quads, camDist, camPlane)
                     if bottom < 0 then bottom = 0 end
                     local top = lineHeight / 2 + height / 2
                     if top >= height then top = height - 1 end
-                    if map[mx][my] == 1 then
-                        local rate = 2 / hitDist
-                        love.graphics.setColor(1, rate, rate)
+                    local wallX = 0
+                    if side == 0 then
+                        wallX = y + hitDist * ry
                     else
-                        local rate = 2 / hitDist
-                        love.graphics.setColor(1, rate, rate)
+                        wallX = x + hitDist * rx
                     end
-                    love.graphics.line(ix + width / 2, bottom, ix + width / 2, top)
+                    wallX = wallX - math.floor(wallX)
+                    local step = 1 / lineHeight
+                    local texPos = (bottom - height * 0.5 + lineHeight * 0.5) * step
+                    for iy = bottom, top do
+                        texPos = texPos + step
+                        love.graphics.setColor(shaders[map[mx][my]](
+                            wallX,
+                            texPos,
+                            time
+                        ))
+                        love.graphics.points(ix + width * 0.5, iy)
+                    end
                 end
             end
         end

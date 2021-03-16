@@ -8,8 +8,8 @@
 -- so who cares.
 
 local loaders = {
-    pic = function (fullName)
-        return love.graphics.newImage(fullName)
+    imageData = function (fullName)
+        return love.image.newImageData(fullName)
     end,
     song = function (fullName)
         return love.audio.newSource(fullName, 'stream')
@@ -19,6 +19,10 @@ local loaders = {
     end
 }
 
+function get(name, kind)
+
+end
+
 --- The structure of this module is of one big constructor function that
 -- returns the assets object. The reason for this approach is it means I can
 -- treat the actual assets list as a private variable which is cute.
@@ -26,21 +30,24 @@ local loaders = {
 --               manager.
 return function (prefix)
     local items = {}
+    local get = function (name, kind)
+        if not items[name] then
+            items[name] = loaders[kind](prefix..name)
+        end
+        return items[name]
+    end
     return {
-        get = function (name, kind)
-            if not items[name] then
-                items[name] = loaders[kind](prefix..name)
-            end
-            return items[name]
+        getImageData = function (name)
+            return get(name, 'imageData')
         end,
-        getPic = function (self, name)
-            return self.get(name, 'pic')
+        getPic = function (name)
+            return love.graphics.newImage(get(name, 'imageData'))
         end,
-        getSong = function (self, name)
-            return self.get(name, 'song')
+        getSong = function (name)
+            return get(name, 'song')
         end,
-        getSound = function (self, name)
-            return self.get(name, 'sound')
+        getSound = function (name)
+            return get(name, 'sound')
         end
     }
 end

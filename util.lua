@@ -149,38 +149,19 @@ function util.flatten(iter)
     return items
 end
 
-function util.vLen(x, y)
-    if x == 0 then
-        if y == 0 then
-            return 0
-        end
-        return y
-    elseif y == 0 then
-        return x
+--- Returns a function which when passed an x and y value just returns the
+-- pixel at that location.
+-- @param imgData is the image data to get it from.
+-- @return the shader function thingy.
+function util.createImageShader(imgData)
+    local width = imgData:getWidth() - 1
+    local height = imgData:getHeight() - 1
+    return function (x, y, time)
+        return imgData:getPixel(
+            util.wrapAroundZero(x * width, width),
+            util.wrapAroundZero(y * height, height)
+        )
     end
-    return math.sqrt(x * x + y * y)
-end
-
-function util.vNorm(x, y)
-    local len = util.vLen(x, y)
-    return x / len, y / len
-end
-
-function util.vPlus(x, y, sx, sy)
-    if not sy then return x + sx, y + sx end
-    return x + sx, y + sy
-end
-
---- Multiplies a vector and returns both results as seperate numbers. The thing
--- to multiply by can be either a scalar or another vector
--- @param x  is the first item of the first vector.
--- @param y  is the second item of the first vector.
--- @param sx is the first item of the second vector or the scalar value.
--- @param sy is the second item of the second vector or can be omitted.
--- @return the two values of the multiplied vecor.
-function util.vTimes(x, y, sx, sy)
-    if not sy then return x * sx, y * sx end
-    return x * sx, y * sy
 end
 
 return util
