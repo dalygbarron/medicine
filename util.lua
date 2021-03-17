@@ -164,5 +164,31 @@ function util.createImageShader(imgData)
     end
 end
 
+--- Mixes two colours together, with the second colour imposing over the first
+-- to the degree specified by the power parameter.
+-- @param power is the degree to which the second colour covers the first.
+-- @param r1    is the red of the first colour.
+-- @param g1    is the green of the first colour.
+-- @param b1    is the blue of the first colour.
+-- @param a1    is the alpha of the first colour.
+-- @param r2    is the red of the second colour.
+-- @param g2    is the green of the second colour.
+-- @param b2    is the blue of the second colour.
+-- @param a2    is the alpha of the second colour.
+-- @return all the components of the new colour, r, g, b, a.
+function util.mixColours(power, r1, g1, b1, a1, r2, g2, b2, a2)
+    power = util.clamp(power, 0, 1)
+    if power == 0 then
+        return r1, g1, b1, a1
+    elseif power == 1 then
+        return r2, g2, b2, a2
+    end
+    local anti = 1 - power
+    return r1 * anti + r2 * power,
+        g1 * anti + g2 * power,
+        b1 * anti + b2 * power,
+        a1 * anti + a2 * power
+end
+
 return util
 

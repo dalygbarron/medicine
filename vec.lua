@@ -41,6 +41,17 @@ function vec.plus(x, y, sx, sy)
     return x + sx, y + sy
 end
 
+--- Returns the subtraction of two vectors or a vector and a scalar.
+-- @param x  is the first part of the first vector.
+-- @param y  is the second part of the first vector.
+-- @param sx is the first part of the second vector or the scalar.
+-- @param sy is the second part of the second vector if included.
+-- @return the result of the subtraction in two components.
+function vec.minus(x, y, sx, sy)
+    if not sy then return x - sx, y - sx end
+    return x - sx, y - sy
+end
+
 --- Multiplies a vector and returns both results as seperate numbers. The thing
 -- to multiply by can be either a scalar or another vector
 -- @param x  is the first item of the first vector.

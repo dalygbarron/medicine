@@ -22,7 +22,7 @@ function love.load()
     local a = assert(game.assets.getImageData('rockwallFlat.png'))
     local b = assert(game.assets.getImageData('grass.png'))
     raycaster = raycasterConstructor(
-        {util.createImageShader(a), util.createImageShader(b)},
+        {util.createImageShader(a), freakyShader},
         0.6,
         0.7
     )
@@ -34,6 +34,5 @@ function love.update(delta)
 end
 
 function love.draw(delta)
-    love.graphics.clear(1, 0, 0)
-    raycaster.draw(map, atlas, time, 3, 2, math.cos(angle), math.sin(angle))
+    raycaster.draw(map, 3, true, time, 2.5, 2.5, math.cos(angle), math.sin(angle))
 end
